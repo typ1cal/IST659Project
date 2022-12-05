@@ -9,9 +9,62 @@ GO
 
 
 --DOWN
+
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
     WHERE CONSTRAINT_NAME = 'fk_clinics_clinic_clinic_id')
-    ALTER TABLE CUSTOMERS DROP CONSTRAINT fk_clinics_clinic_clinic_id
+        ALTER TABLE CUSTOMERS DROP CONSTRAINT fk_clinics_clinic_clinic_id
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
+    WHERE CONSTRAINT_NAME = 'fk_clinics_clinic_state')
+        ALTER TABLE clinic_state DROP CONSTRAINT fk_clinics_clinic_state
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
+    WHERE CONSTRAINT_NAME = 'fk_employees_employee_clinic_id')
+        ALTER TABLE clinic_id DROP CONSTRAINT fk_employees_employee_clinic_id
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
+    WHERE CONSTRAINT_NAME = 'fk_appointments_appointment_patient_id')
+        ALTER TABLE appointment_patient_id DROP CONSTRAINT fk_appointments_appointment_patient_id
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
+    WHERE CONSTRAINT_NAME = 'fk_fix_appointments_fix_appointment_id')
+        ALTER TABLE fix_appointment_id DROP CONSTRAINT fk_fix_appointments_fix_appointment_id
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
+    WHERE CONSTRAINT_NAME = 'fk_fix_appointments_fix_clinic_id')
+        ALTER TABLE fix_clinic_id DROP CONSTRAINT fk_fix_appointments_fix_clinic_id
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
+    WHERE CONSTRAINT_NAME = 'fk_treatments_treatment_appointment_id')
+        ALTER TABLE treatment_appointment_id DROP CONSTRAINT fk_treatments_treatment_appointment_id
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
+    WHERE CONSTRAINT_NAME = 'fk_vaccines_vaccine_patient_id')
+        ALTER TABLE vaccine_patient_id DROP CONSTRAINT fk_vaccines_vaccine_patient_id
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
+    WHERE CONSTRAINT_NAME = 'fk_patients_patient_doctor_id')
+        ALTER TABLE patient_doctor_id DROP CONSTRAINT fk_patients_patient_doctor_id
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
+    WHERE CONSTRAINT_NAME = 'fk_patient_family_patient_id')
+        ALTER TABLE patient_id DROP CONSTRAINT fk_patient_family_patient_id
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
+    WHERE CONSTRAINT_NAME = 'fk_emergency_contacts_patient_id')
+        ALTER TABLE patient_id DROP CONSTRAINT fk_emergency_contacts_patient_id
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
+    WHERE CONSTRAINT_NAME = 'fk_lab_patient_id')
+        ALTER TABLE lab_patient_id DROP CONSTRAINT fk_lab_patient_id
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
+    WHERE CONSTRAINT_NAME = 'fk_bills_patient_id')
+        ALTER TABLE fk_bills_patient_id DROP CONSTRAINT fk_bills_patient_id
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
+    WHERE CONSTRAINT_NAME = 'fk_insurance_patient_id')
+        ALTER TABLE insurance_patient_id DROP CONSTRAINT fk_insurance_patient_id
 
 DROP TABLE IF EXISTS pharmacy
 DROP TABLE IF EXISTS test_price
@@ -148,7 +201,6 @@ CREATE TABLE patients(
 ALTER TABLE patients
     ADD CONSTRAINT fk_patients_patient_doctor_id FOREIGN KEY (patient_doctor_id)
         REFERENCES doctors(doctor_id)
-GO
 
 CREATE TABLE vaccines(
     vaccine_patient_id INT IDENTITY NOT NULL,
@@ -256,7 +308,7 @@ CREATE TABLE test_price(
 )
 
 CREATE TABLE pharmacy(
-    pharmacy_name VARCHAR IDENTITY NOT NULL,
+    pharmacy_name VARCHAR NOT NULL,
     pharmacy_address VARCHAR(255) NOT NULL,
     pharmacy_city VARCHAR(255) NOT NULL,
     pharmacy_zip INT NOT NULL,
