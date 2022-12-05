@@ -16,55 +16,55 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
     WHERE CONSTRAINT_NAME = 'fk_clinics_clinic_state')
-        ALTER TABLE clinic_state DROP CONSTRAINT fk_clinics_clinic_state
+        ALTER TABLE clinics DROP CONSTRAINT fk_clinics_clinic_state
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
     WHERE CONSTRAINT_NAME = 'fk_employees_employee_clinic_id')
-        ALTER TABLE clinic_id DROP CONSTRAINT fk_employees_employee_clinic_id
+        ALTER TABLE employees DROP CONSTRAINT fk_employees_employee_clinic_id
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
     WHERE CONSTRAINT_NAME = 'fk_appointments_appointment_patient_id')
-        ALTER TABLE appointment_patient_id DROP CONSTRAINT fk_appointments_appointment_patient_id
+        ALTER TABLE appointments DROP CONSTRAINT fk_appointments_appointment_patient_id
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
     WHERE CONSTRAINT_NAME = 'fk_fix_appointments_fix_appointment_id')
-        ALTER TABLE fix_appointment_id DROP CONSTRAINT fk_fix_appointments_fix_appointment_id
+        ALTER TABLE fix_appointments DROP CONSTRAINT fk_fix_appointments_fix_appointment_id
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
     WHERE CONSTRAINT_NAME = 'fk_fix_appointments_fix_clinic_id')
-        ALTER TABLE fix_clinic_id DROP CONSTRAINT fk_fix_appointments_fix_clinic_id
+        ALTER TABLE fix_appointments DROP CONSTRAINT fk_fix_appointments_fix_clinic_id
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
     WHERE CONSTRAINT_NAME = 'fk_treatments_treatment_appointment_id')
-        ALTER TABLE treatment_appointment_id DROP CONSTRAINT fk_treatments_treatment_appointment_id
+        ALTER TABLE treatments DROP CONSTRAINT fk_treatments_treatment_appointment_id
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
     WHERE CONSTRAINT_NAME = 'fk_vaccines_vaccine_patient_id')
-        ALTER TABLE vaccine_patient_id DROP CONSTRAINT fk_vaccines_vaccine_patient_id
+        ALTER TABLE vaccines DROP CONSTRAINT fk_vaccines_vaccine_patient_id
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
     WHERE CONSTRAINT_NAME = 'fk_patients_patient_doctor_id')
-        ALTER TABLE patient_doctor_id DROP CONSTRAINT fk_patients_patient_doctor_id
+        ALTER TABLE patients DROP CONSTRAINT fk_patients_patient_doctor_id
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
     WHERE CONSTRAINT_NAME = 'fk_patient_family_patient_id')
-        ALTER TABLE patient_id DROP CONSTRAINT fk_patient_family_patient_id
+        ALTER TABLE patients DROP CONSTRAINT fk_patient_family_patient_id
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
     WHERE CONSTRAINT_NAME = 'fk_emergency_contacts_patient_id')
-        ALTER TABLE patient_id DROP CONSTRAINT fk_emergency_contacts_patient_id
+        ALTER TABLE emergency_contacts DROP CONSTRAINT fk_emergency_contacts_patient_id
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
     WHERE CONSTRAINT_NAME = 'fk_lab_patient_id')
-        ALTER TABLE lab_patient_id DROP CONSTRAINT fk_lab_patient_id
+        ALTER TABLE lab DROP CONSTRAINT fk_lab_patient_id
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
     WHERE CONSTRAINT_NAME = 'fk_bills_patient_id')
-        ALTER TABLE fk_bills_patient_id DROP CONSTRAINT fk_bills_patient_id
+        ALTER TABLE bills DROP CONSTRAINT fk_bills_patient_id
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
     WHERE CONSTRAINT_NAME = 'fk_insurance_patient_id')
-        ALTER TABLE insurance_patient_id DROP CONSTRAINT fk_insurance_patient_id
+        ALTER TABLE insurance DROP CONSTRAINT fk_insurance_patient_id
 
 DROP TABLE IF EXISTS pharmacy
 DROP TABLE IF EXISTS test_price
@@ -134,30 +134,6 @@ ALTER TABLE employees
     ADD CONSTRAINT fk_employees_employee_clinic_id FOREIGN KEY (employee_clinic_id)
         REFERENCES clinics (clinic_id)
 
-CREATE TABLE appointments(
-    appointment_id INT IDENTITY NOT NULL,
-    appointment_type VARCHAR(255) NOT NULL,
-    appointment_created_date DATETIME NOT NULL,
-    appointment_patient_id INT NOT NULL,
-    CONSTRAINT pk_appointments_appointment_id PRIMARY KEY (appointment_id)
-)
-ALTER TABLE appointments
-    ADD CONSTRAINT fk_appointments_appointment_patient_id FOREIGN KEY (appointment_patient_id)
-        REFERENCES patients(patient_id)
-
-
-CREATE TABLE fix_appointments(
-    fix_appointment_id INT IDENTITY NOT NULL,
-    fix_clinic_id INT NOT NULL,
-    CONSTRAINT pk_fix_appointments_fix_appointment_id PRIMARY KEY (fix_appointment_id)
-)
-ALTER TABLE fix_appointments
-    ADD CONSTRAINT fk_fix_appointments_fix_appointment_id FOREIGN KEY (fix_appointment_id)
-        REFERENCES appointments(appointment_id)
-ALTER TABLE fix_appointments
-    ADD CONSTRAINT fk_fix_appointments_fix_clinic_id FOREIGN KEY (fix_clinic_id)
-        REFERENCES clinics (clinic_id)
-
 CREATE TABLE doctors(
     doctor_id INT IDENTITY NOT NULL,
     doctor_license_no INT NOT NULL,
@@ -169,14 +145,6 @@ CREATE TABLE doctors(
     CONSTRAINT pk_doctors_doctor_id PRIMARY KEY (doctor_id)
 )
 
-CREATE TABLE treatments(
-    treatment_appointment_id INT NOT NULL,
-    treatment_doctor_id INT NOT NULL,
-    CONSTRAINT pk_treatments_treatment_appointment_id PRIMARY KEY (treatment_appointment_id)
-)
-ALTER TABLE treatments
-    ADD CONSTRAINT fk_treatments_treatment_appointment_id FOREIGN KEY (treatment_appointment_id)
-        REFERENCES appointments(appointment_id)
 
 CREATE TABLE patients(
     patient_id INT IDENTITY NOT NULL,
@@ -201,6 +169,41 @@ CREATE TABLE patients(
 ALTER TABLE patients
     ADD CONSTRAINT fk_patients_patient_doctor_id FOREIGN KEY (patient_doctor_id)
         REFERENCES doctors(doctor_id)
+
+
+CREATE TABLE appointments(
+    appointment_id INT IDENTITY NOT NULL,
+    appointment_type VARCHAR(255) NOT NULL,
+    appointment_created_date DATETIME NOT NULL,
+    appointment_patient_id INT NOT NULL,
+    CONSTRAINT pk_appointments_appointment_id PRIMARY KEY (appointment_id)
+)
+ALTER TABLE appointments
+    ADD CONSTRAINT fk_appointments_appointment_patient_id FOREIGN KEY (appointment_patient_id)
+        REFERENCES patients(patient_id)
+
+
+CREATE TABLE fix_appointments(
+    fix_appointment_id INT IDENTITY NOT NULL,
+    fix_clinic_id INT NOT NULL,
+    CONSTRAINT pk_fix_appointments_fix_appointment_id PRIMARY KEY (fix_appointment_id)
+)
+ALTER TABLE fix_appointments
+    ADD CONSTRAINT fk_fix_appointments_fix_appointment_id FOREIGN KEY (fix_appointment_id)
+        REFERENCES appointments(appointment_id)
+ALTER TABLE fix_appointments
+    ADD CONSTRAINT fk_fix_appointments_fix_clinic_id FOREIGN KEY (fix_clinic_id)
+        REFERENCES clinics (clinic_id)
+
+
+CREATE TABLE treatments(
+    treatment_appointment_id INT NOT NULL,
+    treatment_doctor_id INT NOT NULL,
+    CONSTRAINT pk_treatments_treatment_appointment_id PRIMARY KEY (treatment_appointment_id)
+)
+ALTER TABLE treatments
+    ADD CONSTRAINT fk_treatments_treatment_appointment_id FOREIGN KEY (treatment_appointment_id)
+        REFERENCES appointments(appointment_id)
 
 CREATE TABLE vaccines(
     vaccine_patient_id INT IDENTITY NOT NULL,
