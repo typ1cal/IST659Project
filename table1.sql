@@ -66,6 +66,10 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
     WHERE CONSTRAINT_NAME = 'fk_insurance_patient_id')
         ALTER TABLE insurance DROP CONSTRAINT fk_insurance_patient_id
 
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
+    WHERE CONSTRAINT_NAME = 'fk_insurance_covers_cover_code')
+        ALTER TABLE insurance_covers DROP CONSTRAINT fk_insurance_covers_cover_code
+
 DROP TABLE IF EXISTS pharmacy
 DROP TABLE IF EXISTS test_price
 DROP TABLE IF EXISTS insurance_covers
@@ -284,12 +288,11 @@ CREATE TABLE insurance(
     insurance_code INT NOT NULL,
     insurance_publish_date DATETIME NOT NULL,
     insurance_expiry_date DATETIME NOT NULL
-    CONSTRAINT pk_insurance_medicine_id PRIMARY KEY (insurance_medicine_id)
+    CONSTRAINT pk_insurance_insurance_code PRIMARY KEY (insurance_code)
 )
 ALTER TABLE insurance
     ADD CONSTRAINT fk_insurance_patient_id FOREIGN KEY (insurance_patient_id)
         REFERENCES patients(patient_id)
-
 
 
 CREATE TABLE insurance_covers(
@@ -297,9 +300,11 @@ CREATE TABLE insurance_covers(
     insurance_cover_company VARCHAR(255) NOT NULL,
     insurance_cover_entry_fee INT NOT NULL,
     insurance_cover_co_pay VARCHAR(255) NOT NULL,
-    CONSTRAINT pk_insurance_covers_insurance_cover PRIMARY KEY (insurance_cover)
+    CONSTRAINT pk_insurance_covers_insurance_cover_code PRIMARY KEY (insurance_cover_code)
 )
-
+ALTER TABLE insurance_covers
+    ADD CONSTRAINT fk_insurance_covers_cover_code FOREIGN KEY (insurance_cover_code)
+        REFERENCES insurance(insurance_code)
 
 CREATE TABLE test_price(
     test_code INT IDENTITY NOT NULL,
