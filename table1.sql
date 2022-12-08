@@ -279,14 +279,11 @@ ALTER TABLE bills
         REFERENCES patients(patient_id)
 
 CREATE TABLE insurance(
-    insurance_medicine_id INT IDENTITY NOT NULL,
-    insurance_patient_id INT NOT NULL,
-    insurance_name INT NOT NULL,
-    insurance_quantity INT NOT NULL,
-    insurance_medicine_type VARCHAR NULL,
+    insurance_patient_id INT IDENTITY NOT NULL,
     insurance_policy_no INT NOT NULL,
-    insurance_publish_date INT NOT NULL,
-    insurance_expiry_date INT NOT NULL
+    insurance_code INT NOT NULL,
+    insurance_publish_date DATETIME NOT NULL,
+    insurance_expiry_date DATETIME NOT NULL
     CONSTRAINT pk_insurance_medicine_id PRIMARY KEY (insurance_medicine_id)
 )
 ALTER TABLE insurance
@@ -296,7 +293,7 @@ ALTER TABLE insurance
 
 
 CREATE TABLE insurance_covers(
-    insurance_cover INT IDENTITY NOT NULL,
+    insurance_cover_code INT IDENTITY NOT NULL,
     insurance_cover_company VARCHAR(255) NOT NULL,
     insurance_cover_entry_fee INT NOT NULL,
     insurance_cover_co_pay VARCHAR(255) NOT NULL,
