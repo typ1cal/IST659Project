@@ -10,6 +10,7 @@ GO
 
 --DOWN
 
+
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
     WHERE CONSTRAINT_NAME = 'fk_clinics_clinic_clinic_id')
         ALTER TABLE CUSTOMERS DROP CONSTRAINT fk_clinics_clinic_clinic_id
@@ -145,9 +146,14 @@ CREATE TABLE doctors(
     doctor_lastname VARCHAR(255),
     doctor_email VARCHAR(255),
     doctor_contact_no INT NOT NULL,
-    doctor_experience INT NULL
+    doctor_experience INT NULL,
+    doctor_clinic_id INT NOT NULL,
     CONSTRAINT pk_doctors_doctor_id PRIMARY KEY (doctor_id)
 )
+ALTER TABLE doctors
+    ADD CONSTRAINT fk_doctors_doctor_clinic_id FOREIGN KEY (doctor_clinic_id)
+        REFERENCES clinics (clinic_id)
+
 
 
 CREATE TABLE patients(
@@ -376,3 +382,31 @@ VALUES ('Alabama', 'AL'),
        ('Wyoming', 'WY')
 
 --VERIFY
+
+
+-- TRIGGER 1 - TO update vaccine status to vaccinated once the vaccine date is updated in the table automatically.
+DROP TRIGGER IF EXISTS t_after_update_vaccine_status
+GO 
+CREATE TRIGGER t_after_update_vaccine_status on vaccines
+AFTER INSERT, UPDATE
+AS BEGIN
+    IF UPDATE(vaccine_date) BEGIN
+    update vaccines   
+    SET vaccine_patient_status='Vaccinated' 
+END
+end 
+
+--VIEWS1 WHICH PATIENTS REFER TO THE DOCTOR NAME ALONG WITH THE CLINIC THEY VISIT.
+select clinic_name, doctor_license_no, doctor_firstname + ' ' + doctor_lastname as doctor_name, patient_firstname + ' ' + patient_lastname  as patient_name from clinics c
+left join doctors d
+on c.clinic_id=d. doctor_clinic_id
+left join patients p
+on 
+d.doctor_id=p.patient_doctor_id  
+
+--VIEWS2 INSIGHTS FOR PHARMACY TO GET THE ALLERGY COUNT AND GET MEDICINE COUNT IN STOCK AND RECOMMEND TO DOCCTORS BASED ON THE BELOW VIEW
+select c.clinic_name, d.doctor_license_no, d.doctor_firstname + ' ' + d.doctor_lastname as doctor_name, count(distinct p.patient_allergy)  as allergy_count from clinics  as c
+left join doctors as d
+on c.clinic_id=d.doctor_clinic_id
+left join patients p
+on d.doctor_id=p.patient_doctor_id group by c.clinic_name,d.doctor_license_no,d.doctor_firstname,d.doctor_lastname
