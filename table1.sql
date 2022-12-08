@@ -404,7 +404,7 @@ left join patients p
 on 
 d.doctor_id=p.patient_doctor_id  
 
---VIEWS2 INSIGHTS FOR PHARMACY TO GET THE ALLERGY COUNT AND GET MEDICINE COUNT IN STOCK AND RECOMMEND TO DOCCTORS BASED ON THE BELOW VIEW
+--VIEWS2 INSIGHTS FOR PHARMACY TO GET THE ALLERGY COUNT AND GET MEDICINE COUNT IN STOCK AND RECOMMEND TO DOCTORS BASED ON THE BELOW VIEW
 select c.clinic_name, d.doctor_license_no, d.doctor_firstname + ' ' + d.doctor_lastname as doctor_name, count(distinct p.patient_allergy)  as allergy_count from clinics  as c
 left join doctors as d
 on c.clinic_id=d.doctor_clinic_id
