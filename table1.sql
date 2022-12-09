@@ -40,10 +40,6 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
         ALTER TABLE treatments DROP CONSTRAINT fk_treatments_treatment_appointment_id
 GO
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
-    WHERE CONSTRAINT_NAME = 'fk_vaccines_vaccine_patient_id')
-        ALTER TABLE vaccines DROP CONSTRAINT fk_vaccines_vaccine_patient_id
-GO
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
     WHERE CONSTRAINT_NAME = 'fk_patients_patient_doctor_id')
         ALTER TABLE patients DROP CONSTRAINT fk_patients_patient_doctor_id
 GO
@@ -159,8 +155,6 @@ ALTER TABLE doctors
     ADD CONSTRAINT fk_doctors_doctor_clinic_id FOREIGN KEY (doctor_clinic_id)
         REFERENCES clinics (clinic_id)
 
-
-
 CREATE TABLE patients(
     patient_id INT NOT NULL,
     patient_firstname VARCHAR(255) NOT NULL,
@@ -231,11 +225,8 @@ CREATE TABLE vaccines(
     vaccine_patient_status BIT NULL,
     vaccine_date DATETIME NULL,
     vaccine_due_date DATETIME NULL
-    CONSTRAINT pk_vaccines_vaccine_patient_id PRIMARY KEY (vaccine_patient_id)
+    CONSTRAINT pk_vaccines_vaccine_patient_id UNIQUE (vaccine_patient_id)
 )
-ALTER TABLE vaccines
-    ADD CONSTRAINT fk_vaccines_vaccine_patient_id FOREIGN KEY (vaccine_patient_id)
-        REFERENCES patients(patient_id)
 
 
 CREATE TABLE patient_family(
@@ -417,6 +408,23 @@ VALUES (1, 'Indy', 'Draven', 'US', 'F', '2010-02-11', 12, '1961 Saint Marys Aven
        (10, 'Belinda', 'Fabian', 'US', 'F', '2017-09-08', 5, '4943 Yorkshire Circle', NULL, 'Syracuse', 'NY', 13208, NULL, NULL, 'no', 1004)
 GO
 
+INSERT INTO vaccines (vaccine_patient_id, vaccine_id, vaccine_name, vaccine_patient_status, vaccine_date, vaccine_due_date)
+VALUES (1, 661, 'mmr', 0, '2019-05-06', NULL),
+       (2, 662, 'dtap', 0, '2019-05-07', NULL),
+       (3, 663, 'hepb', 0, '2019-05-08', NULL),
+       (4, 661, 'mmr', 0, '2019-05-09', NULL),
+       (5, 662, 'dtap', 0, '2019-05-10', NULL),
+       (6, 663, 'hepb', 0, '2019-05-11', NULL),
+       (7, 661, 'mmr', 0, '2019-05-12', NULL),
+       (8, 662, 'dtap', 0, '2019-05-13', NULL),
+       (9, 663, 'hepb', 0, '2019-05-14', NULL),
+       (10, 661, 'mmr', 0, '2019-05-15', NULL),
+       (11, 662, 'dtap', 1, '2022-05-06', NULL),
+       (12, 663, 'hepb', 1, '2022-05-07', NULL),
+       (13, 661, 'mmr', 1, '2022-05-08', NULL),
+       (14, 662, 'dtap', 1, '2022-05-09', NULL)
+GO
+
 INSERT INTO test_price (test_code, test_price)
 VALUES (4001, 800),
        (4002, 456),
@@ -525,22 +533,6 @@ VALUES (901, 4, 100, 156, 111222, 256),
        (906, 7, 250, 0, 112345, 250),
        (907, 8, 150, 148, 112312, 298),
        (908, 10, 200, 303, 115423, 503)
-GO
-INSERT INTO vaccines (vaccine_patient_id, vaccine_id, vaccine_name, vaccine_patient_status, vaccine_date, vaccine_due_date)
-VALUES (1, 661, 'mmr', 0, '2019-05-06', NULL),
-       (2, 662, 'dtap', 0, '2019-05-07', NULL),
-       (3, 663, 'hepb', 0, '2019-05-08', NULL),
-       (4, 661, 'mmr', 0, '2019-05-09', NULL),
-       (5, 662, 'dtap', 0, '2019-05-10', NULL),
-       (6, 663, 'hepb', 0, '2019-05-11', NULL),
-       (7, 661, 'mmr', 0, '2019-05-12', NULL),
-       (8, 662, 'dtap', 0, '2019-05-13', NULL),
-       (9, 663, 'hepb', 0, '2019-05-14', NULL),
-       (10, 661, 'mmr', 0, '2019-05-15', NULL),
-       (11, 662, 'dtap', 1, '2022-05-06', NULL),
-       (12, 663, 'hepb', 1, '2022-05-07', NULL),
-       (13, 661, 'mmr', 1, '2022-05-08', NULL),
-       (14, 662, 'dtap', 1, '2022-05-09', NULL)
 
 GO
 INSERT INTO fix_appointments (fix_appointment_id, fix_clinic_id)
@@ -591,3 +583,4 @@ left join doctors as d
 on c.clinic_id=d.doctor_clinic_id
 left join patients p
 on d.doctor_id=p.patient_doctor_id group by c.clinic_name,d.doctor_license_no,d.doctor_firstname,d.doctor_lastname
+
