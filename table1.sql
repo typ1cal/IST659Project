@@ -71,6 +71,12 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
     WHERE CONSTRAINT_NAME = 'fk_patient_family_patient_id')
         ALTER TABLE patient_family DROP CONSTRAINT fk_patient_family_patient_id
 GO
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
+    WHERE CONSTRAINT_NAME = 'fk_medicines_patient_id')
+        ALTER TABLE medicines DROP CONSTRAINT fk_medicines_patient_id
+
+GO
 DROP TABLE IF EXISTS pharmacy
 DROP TABLE IF EXISTS test_price
 DROP TABLE IF EXISTS insurance_covers
@@ -89,6 +95,7 @@ DROP TABLE IF EXISTS employees
 DROP TABLE IF EXISTS clinic_contacts
 DROP TABLE IF EXISTS clinics
 DROP TABLE IF EXISTS state_lookup
+DROP TABLE IF EXISTS medicines
 GO
 -- UP METADATA
 
@@ -228,6 +235,17 @@ CREATE TABLE vaccines(
     CONSTRAINT pk_vaccines_vaccine_patient_id UNIQUE (vaccine_patient_id)
 )
 
+CREATE TABLE medicines(
+    medicine_id INT NOT NULL,
+    patient_id INT NOT NULL,
+    medicine_name VARCHAR(255) NOT NULL,
+    medicine_quantity BIGINT NOT NULL,
+    medicine_type VARCHAR(255) NOT NULL
+    CONSTRAINT pk_medicines_medicine_id PRIMARY KEY (medicine_id)
+)
+ALTER TABLE medicines
+    ADD CONSTRAINT fk_medicines_patient_id FOREIGN KEY (patient_id)
+        REFERENCES patients(patient_id)
 
 CREATE TABLE patient_family(
     patient_id INT NOT NULL,
