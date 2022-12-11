@@ -97,6 +97,8 @@ DROP TABLE IF EXISTS clinics
 DROP TABLE IF EXISTS state_lookup
 DROP TABLE IF EXISTS medicines
 GO
+
+
 -- UP METADATA
 
 CREATE TABLE state_lookup
