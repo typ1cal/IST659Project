@@ -1,2 +1,2 @@
-# IST659Project
-Final Project for IST659
+Group project by 
+Yash, Sowmeya, and Emine
